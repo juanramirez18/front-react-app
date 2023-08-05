@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import { Children } from "react";
+import { createBrowserRouter } from "react-router-dom";
+import LoginScreen from "./screens/Login";
+import ProductosScreen from "./screens/Productos";
+import React from "react";
+import MainLayout from "./layouts/main";
+import ClientesScreen from "./screens/Clientes";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
 
-export default App;
+
+const router = createBrowserRouter([
+  {path: "/login",
+  element: <LoginScreen/>
+  
+  },
+  {path:"/", element: <MainLayout/>, children:[
+    {path:"/productos", element:<ProductosScreen/>},
+    {path:"/clientes", element: <ClientesScreen/>}
+]}
+]);
+
+export default router;

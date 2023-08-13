@@ -1,7 +1,11 @@
 import axios from "axios";
 import React from "react"; 
 import Modal from "../../components/Modal";
-import {Table} from "react-bootstrap"
+import {Table} from "react-bootstrap";
+import userDataSlice from "../../redux/slices/userData";
+import { useSelector } from "react-redux";
+import userData from "../../redux/slices/userData";
+
 
 const ProductosScreen = ()=>{
     const [products, setProducts] = React.useState(null);
@@ -15,6 +19,9 @@ const ProductosScreen = ()=>{
         getAllProducts();
 
     },[])
+    const token = useSelector(state=>state.userData.token)
+    console.log(token)
+    
 
 
     const handleChange = (e)=>{
@@ -26,7 +33,12 @@ const ProductosScreen = ()=>{
     const getAllProducts = async()=>{
         const products = await axios({
             method:"get",
-            url:"http://localhost:3000/api/productos"
+            url:"http://localhost:3000/api/productos",
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+
         }).then((data)=>{setProducts(data.data)})
     };
     console.log(idState)
@@ -42,6 +54,10 @@ const ProductosScreen = ()=>{
                 data:{
                     name: name,
                     price: price
+                },
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': token
                 }
             }).then(res=>setMsn(res.data.messagge))
             setEstadoModal(false)
@@ -53,7 +69,17 @@ const ProductosScreen = ()=>{
     };
 
     const deleteMethod = async()=>{
-
+    
+        const products = await axios({
+            method:"delete",
+            url:`http://localhost:3000/api/productos/${idState}`,
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': token
+            }
+        }); 
+        console.log("usuario eliminado exitosamente")
+        setEstadoModal(false)
     }
    
       
@@ -111,8 +137,10 @@ const ProductosScreen = ()=>{
                                 <label>Precio</label>
                                 <input type="text"className="form-control" name="price" value={dataForm.price} onChange={(e)=>setDataForm(e.target.value)} onBlur={(e)=>handleChange(e)}/> 
                             </div>
+                            <br/>
                             <div>
-                                <button type="button"className="btn btn-success" onClick={(e)=>updateProducts(e)}>Enviar</button>
+                                <button type="button"className="btn btn-success" onClick={(e)=>updateProducts(e)}>Actualizar</button>
+                                <button style={{margin: 4}}type="button"className="btn btn-danger" onClick={(e)=>deleteMethod(e)}>Eliminar</button>
 
                             </div>
                             {msn &&

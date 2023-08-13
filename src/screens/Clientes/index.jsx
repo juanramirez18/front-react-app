@@ -2,8 +2,10 @@ import react from "react";
 import axios from "axios";
 import { Table } from "react-bootstrap";
 import React from "react";
+import { useSelector, UseSelector } from "react-redux/es/hooks/useSelector";
 
 export default function ClientesScreen(){
+    const token = useSelector(state=>state.userData.token)
     React.useEffect(()=>{
         getMethod()
 
@@ -14,7 +16,11 @@ export default function ClientesScreen(){
         try {
             const customers = await axios({
                 method:"get",
-                url:"http://localhost:3000/api/clientes"
+                url:"http://localhost:3000/api/clientes",
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                }
             }).then(res=>setCustomer(res.data))
         } catch (error) {
             console.log(error)
